@@ -94,20 +94,20 @@ fn mydigit1(input: &str) -> Res<&str, &str> {
 }
 fn host(input: &str) -> Res<&str, Host> {
     let mut res;
-    if let Ok((next, parsed)) =
-        tuple((many_m_n(3, 3, terminated(mydigit1, tag("."))), mydigit1))(input)
-    {
+    if let Ok((next, parsed)) = tuple((count(terminated(mydigit1, tag(".")), 3), mydigit1))(input) {
         res = parsed.0;
         res.push(parsed.1);
-        let ip_address: Result<Vec<_>, _> = res
+        let ip_address: Result<Vec<_>, std::num::ParseIntError> = res
             .iter()
             .map(|d| {
-                let x = d.parse::<u8>().map_err(|_| d.to_owned())?;
-                if x < 1_u8 || x > 254_u8 {
-                    return Err(d.to_owned());
-                } else {
-                    return Ok(x);
-                }
+                let x: u8 = d.parse::<u8>()?; //.map_err(|_| d.to_owned())?;
+                                              // just showing how to perform a run-time check
+                                              // if x < 1_u8 || x > 254_u8 {
+                                              //     return Err(d.to_owned());
+                                              // } else {
+                                              //     return Ok(x);
+                                              // }
+                return Ok(x);
             })
             .collect();
         match ip_address {
