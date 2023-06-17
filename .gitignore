@@ -1,5 +1,5 @@
 Cargo.lock
-.ipynb_checkpoints
+*.ipynb_checkpoints
 rust-nom-example/target
 
 nom-parser-example/target
